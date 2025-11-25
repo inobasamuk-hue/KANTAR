@@ -10,4 +10,272 @@
 	<h2>Merhaba MAVİ Dünya!</h2>
   <p>Bu sayfa GitHub Pages ile ücretsiz yayınlandı.</p>
 </body>
+
 </html>10:29 24.11.2025
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tablo Görünümü</title>
+  <style>
+    :root {
+      --bg: #0f172a;       /* arka plan (slate-900) */
+      --card: #111827;     /* kart (gray-900) */
+      --text: #e5e7eb;     /* metin (gray-200) */
+      --muted: #9ca3af;    /* soluk metin (gray-400) */
+      --accent: #3b82f6;   /* vurgu (blue-500) */
+      --border: #1f2937;   /* kenar (gray-800) */
+      --hover: #0b1226;    /* hover satır */
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      background: linear-gradient(180deg, #0b1020, var(--bg));
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: radial-gradient(1200px 400px at 100% 0%, rgba(59,130,246,0.12), transparent 50%),
+                  radial-gradient(800px 300px at 0% 100%, rgba(16,185,129,0.12), transparent 50%),
+                  var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+    }
+
+    .title {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .input, .select {
+      background: #0b1220;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 10px;
+      outline: none;
+    }
+    .input::placeholder { color: var(--muted); }
+    .select { cursor: pointer; }
+
+    .table-wrap {
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #0c152a;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      padding: 14px 16px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:hover {
+      background: var(--hover);
+    }
+
+    .sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+    .sortable .arrow {
+      margin-left: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <div class="title">Araç Tedarik Tablosu</div>
+        <div class="controls">
+          <input id="search" class="input" type="search" placeholder="Araç, tedarikçi veya değer ara..." />
+          <select id="metric" class="select" aria-label="Metriğe göre filtre">
+            <option value="all">Tümü</option>
+            <option value="1">Sütun 1</option>
+            <option value="2">Sütun 2</option>
+            <option value="3">Sütun 3</option>
+            <option value="4">Sütun 4</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th class="sortable" data-key="Araç">Araç <span class="arrow">↕</span></th>
+              <th class="sortable" data-key="Tedarikçi">Tedarikçi <span class="arrow">↕</span></th>
+              <th class="sortable" data-key="1">1 <span class="arrow">↕</span></th>
+              <th class="sortable" data-key="2">2 <span class="arrow">↕</span></th>
+              <th class="sortable" data-key="3">3 <span class="arrow">↕</span></th>
+              <th class="sortable" data-key="4">4 <span class="arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Satırlar JS ile eklenecek -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer">
+        <span id="count" class="badge">0 satır</span>
+        <span>Tablo son güncelleme: otomatik</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const rawData = [
+      { "Araç": "AHMET SAYAR", "Tedarikçi": "MUSTAFA SÜRE", "1": "0", "2": "0", "3": "311", "4": "0" },
+      { "Araç": "AHMET SAYAR", "Tedarikçi": "NEDİM YENTÜRK", "1": "363", "2": "353", "3": "353", "4": "358" },
+      { "Araç": "AHMET SAYAR", "Tedarikçi": "SEYİT KESKİN", "1": "565", "2": "573", "3": "0", "4": "1.182" },
+      { "Araç": "AHMET SAYAR", "Tedarikçi": "ÇAĞRI ÇİVİ",   "1": "556", "2": "558", "3": "539", "4": "540" },
+      { "Araç": "AHMET SAYAR", "Tedarikçi": "ALİ OSMAN AKÇA","1": "556", "2": "544", "3": "555", "4": "568" }
+    ];
+
+    const tbody = document.querySelector('#dataTable tbody');
+    const countBadge = document.getElementById('count');
+    const searchInput = document.getElementById('search');
+    const metricSelect = document.getElementById('metric');
+    const headers = document.querySelectorAll('thead th.sortable');
+
+    let data = [...rawData];
+    let sortState = { key: null, dir: 1 }; // 1: asc, -1: desc
+
+    function render(rows) {
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r["Araç"]}</td>
+          <td>${r["Tedarikçi"]}</td>
+          <td>${r["1"]}</td>
+          <td>${r["2"]}</td>
+          <td>${r["3"]}</td>
+          <td>${r["4"]}</td>
+        </tr>
+      `).join('');
+      countBadge.textContent = `${rows.length} satır`;
+    }
+
+    function normalizeNumber(str) {
+      // Türkçe binlik ayırıcı nokta olabilir: "1.182" -> 1182
+      const cleaned = String(str).replace(/\./g, '').replace(/,/g, '.');
+      const num = Number(cleaned);
+      return isNaN(num) ? null : num;
+    }
+
+    function sortBy(key) {
+      const numeric = ["1","2","3","4"].includes(key);
+      sortState.dir = sortState.key === key ? -sortState.dir : 1;
+      sortState.key = key;
+
+      data.sort((a, b) => {
+        const va = numeric ? normalizeNumber(a[key]) : String(a[key]).toLowerCase();
+        const vb = numeric ? normalizeNumber(b[key]) : String(b[key]).toLowerCase();
+        if (va === vb) return 0;
+        if (va == null) return 1;
+        if (vb == null) return -1;
+        return va > vb ? sortState.dir : -sortState.dir;
+      });
+      render(filteredData());
+    }
+
+    function filteredData() {
+      const q = searchInput.value.trim().toLowerCase();
+      const metric = metricSelect.value;
+
+      return data.filter(r => {
+        const textHit =
+          r["Araç"].toLowerCase().includes(q) ||
+          r["Tedarikçi"].toLowerCase().includes(q) ||
+          ["1","2","3","4"].some(k => String(r[k]).toLowerCase().includes(q));
+
+        if (metric === 'all') return textHit;
+
+        const val = normalizeNumber(r[metric]);
+        // Metriğe göre basit bir filtre örneği: arama yoksa tümünü göster
+        if (!q) return true;
+        // Aramada sayı geçiyorsa ve metrik seçildiyse, karşılaştırma yapılabilir (örn. ">=500")
+        // Basitçe metinde geçen ifadelere bakıyoruz
+        return textHit && val != null;
+      });
+    }
+
+    headers.forEach(h => {
+      h.addEventListener('click', () => sortBy(h.dataset.key));
+    });
+
+    searchInput.addEventListener('input', () => render(filteredData()));
+    metricSelect.addEventListener('change', () => render(filteredData()));
+
+    // İlk yükleme
+    render(data);
+  </script>
+</body>
+</html>16:39 25.11.2025
